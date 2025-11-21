@@ -1,54 +1,54 @@
-"use client";
+"use client"
 
-import { createContext, useContext, useEffect, useState } from "react";
-import { getTokenFromNative, mockJsBridge } from "@/lib/jsbridge";
+import { createContext, useContext, useEffect, useState } from "react"
+import { getTokenFromNative, mockJsBridge } from "@/lib/jsbridge"
 
 interface AuthContextType {
-  token: string | null;
-  isLoading: boolean;
-  error: Error | null;
-  refreshToken: () => Promise<void>;
+  token: string | null
+  isLoading: boolean
+  error: Error | null
+  refreshToken: () => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [token, setToken] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
 
   const loadToken = async () => {
     try {
-      setIsLoading(true);
-      setError(null);
-      const newToken = await getTokenFromNative();
-      setToken(newToken);
+      setIsLoading(true)
+      setError(null)
+      const newToken = await getTokenFromNative()
+      setToken(newToken)
     } catch (err) {
-      setError(err instanceof Error ? err : new Error("Failed to load token"));
-      console.error("[Auth] Failed to get token:", err);
+      setError(err instanceof Error ? err : new Error("Failed to load token"))
+      console.error("[Auth] Failed to get token:", err)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
     // Initialize mock jsbridge in development if needed
     if (process.env.NODE_ENV === "development") {
-      mockJsBridge();
+      mockJsBridge()
     }
 
-    loadToken();
-  }, []);
+    loadToken()
+  }, [])
 
   const refreshToken = async () => {
-    await loadToken();
-  };
+    await loadToken()
+  }
 
   return (
     <AuthContext.Provider value={{ token, isLoading, error, refreshToken }}>
       {children}
     </AuthContext.Provider>
-  );
+  )
 }
 
 /**
@@ -56,11 +56,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
  * @throws Error if used outside of AuthProvider
  */
 export function useAuth() {
-  const context = useContext(AuthContext);
+  const context = useContext(AuthContext)
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error("useAuth must be used within an AuthProvider")
   }
-  return context;
+  return context
 }
 
 /**
@@ -68,6 +68,6 @@ export function useAuth() {
  * Returns null if token is not available yet
  */
 export function useToken() {
-  const { token } = useAuth();
-  return token;
+  const { token } = useAuth()
+  return token
 }

@@ -1,10 +1,10 @@
-import type { JsBridge } from "@/types/jsbridge";
+import type { JsBridge } from "@/types/jsbridge"
 
 /**
  * Check if jsbridge is available
  */
 export function isJsBridgeAvailable(): boolean {
-  return typeof window !== "undefined" && typeof window.proxy !== "undefined";
+  return typeof window !== "undefined" && typeof window.proxy !== "undefined"
 }
 
 /**
@@ -18,26 +18,26 @@ export function getTokenFromNative(): Promise<string> {
       if (process.env.NODE_ENV === "development") {
         console.warn(
           "[JsBridge] Not available - using mock token for development"
-        );
-        resolve(process.env.NEXT_PUBLIC_MOCK_TOKEN || "mock-dev-token");
-        return;
+        )
+        resolve(process.env.NEXT_PUBLIC_MOCK_TOKEN || "mock-dev-token")
+        return
       }
-      reject(new Error("JsBridge is not available"));
-      return;
+      reject(new Error("JsBridge is not available"))
+      return
     }
 
     try {
       window.proxy!.getToken((token: string) => {
         if (token) {
-          resolve(token);
+          resolve(token)
         } else {
-          reject(new Error("Failed to get token from native app"));
+          reject(new Error("Failed to get token from native app"))
         }
-      });
+      })
     } catch (error) {
-      reject(error);
+      reject(error)
     }
-  });
+  })
 }
 
 /**
@@ -50,10 +50,10 @@ export function mockJsBridge(mockToken: string = "mock-dev-token") {
       getToken: (callback) => {
         // Simulate async behavior
         setTimeout(() => {
-          callback(mockToken);
-        }, 100);
+          callback(mockToken)
+        }, 100)
       },
-    } as JsBridge;
-    console.log("[JsBridge] Mock initialized with token:", mockToken);
+    } as JsBridge
+    console.log("[JsBridge] Mock initialized with token:", mockToken)
   }
 }

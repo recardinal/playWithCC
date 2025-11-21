@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { useAuth } from "@/contexts/auth-context";
-import { useApiQuery, useApiMutation } from "@/hooks/use-api";
+import { useAuth } from "@/contexts/auth-context"
+import { useApiQuery, useApiMutation } from "@/hooks/use-api"
 
 /**
  * Example component demonstrating API integration
@@ -15,25 +15,25 @@ import { useApiQuery, useApiMutation } from "@/hooks/use-api";
 
 // Define your types
 interface User {
-  id: number;
-  name: string;
-  email: string;
+  id: number
+  name: string
+  email: string
 }
 
 interface CreateUserData {
-  name: string;
-  email: string;
+  name: string
+  email: string
 }
 
 export function ExampleUsage() {
-  const { token, isLoading: authLoading, error: authError } = useAuth();
+  const { token, isLoading: authLoading, error: authError } = useAuth()
 
   // Example GET request
   const {
     data: users,
     isLoading: usersLoading,
     error: usersError,
-  } = useApiQuery<User[]>("/api/users", ["users"]);
+  } = useApiQuery<User[]>("/api/users", ["users"])
 
   // Example POST request
   const createUser = useApiMutation<User, CreateUserData>(
@@ -41,42 +41,42 @@ export function ExampleUsage() {
     "POST",
     {
       onSuccess: (data) => {
-        console.log("User created:", data);
+        console.log("User created:", data)
       },
       onError: (error) => {
-        console.error("Failed to create user:", error);
+        console.error("Failed to create user:", error)
       },
       // Invalidate users query to refetch the list
       invalidateQueries: [["users"]],
     }
-  );
+  )
 
   // Auth loading state
   if (authLoading) {
-    return <div>Loading authentication...</div>;
+    return <div>Loading authentication...</div>
   }
 
   // Auth error state
   if (authError) {
-    return <div>Auth error: {authError.message}</div>;
+    return <div>Auth error: {authError.message}</div>
   }
 
   // Show token (for debugging only - remove in production!)
-  console.log("Current token:", token);
+  console.log("Current token:", token)
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Example API Usage</h1>
+      <h1 className="mb-4 text-2xl font-bold">Example API Usage</h1>
 
       {/* Display users */}
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">Users List</h2>
+        <h2 className="mb-2 text-xl font-semibold">Users List</h2>
         {usersLoading && <div>Loading users...</div>}
         {usersError && <div>Error: {usersError.message}</div>}
         {users && (
           <ul className="space-y-2">
             {users.map((user) => (
-              <li key={user.id} className="p-2 border rounded">
+              <li key={user.id} className="rounded border p-2">
                 {user.name} - {user.email}
               </li>
             ))}
@@ -86,7 +86,7 @@ export function ExampleUsage() {
 
       {/* Create user button */}
       <div>
-        <h2 className="text-xl font-semibold mb-2">Create User</h2>
+        <h2 className="mb-2 text-xl font-semibold">Create User</h2>
         <button
           onClick={() =>
             createUser.mutate({
@@ -95,7 +95,7 @@ export function ExampleUsage() {
             })
           }
           disabled={createUser.isPending}
-          className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+          className="rounded bg-blue-500 px-4 py-2 text-white disabled:opacity-50"
         >
           {createUser.isPending ? "Creating..." : "Create User"}
         </button>
@@ -109,5 +109,5 @@ export function ExampleUsage() {
         )}
       </div>
     </div>
-  );
+  )
 }

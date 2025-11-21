@@ -7,13 +7,13 @@ export interface JsBridge {
    * Get authentication token from native app
    * @param callback - Called with token string when available
    */
-  getToken: (callback: (token: string) => void) => void;
+  getToken: (callback: (token: string) => void) => void
 }
 
 declare global {
   interface Window {
-    proxy?: JsBridge;
+    proxy?: JsBridge
   }
 }
 
-export {};
+export {}

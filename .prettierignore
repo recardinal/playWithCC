@@ -1,0 +1,31 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.*
+
+# Next.js
+.next
+out
+build
+
+# Production
+dist
+
+# Env files
+.env*
+!.env.example
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock

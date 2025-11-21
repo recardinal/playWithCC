@@ -27,6 +27,7 @@ cp .env.example .env.local
 ```
 
 Edit `.env.local`:
+
 ```env
 NEXT_PUBLIC_API_URL=https://your-backend-api.com
 NEXT_PUBLIC_MOCK_TOKEN=your-mock-token-for-development
@@ -41,6 +42,7 @@ window.proxy.getToken(callback)
 ```
 
 **Callback signature:**
+
 ```typescript
 callback: (token: string) => void
 ```
@@ -50,7 +52,7 @@ callback: (token: string) => void
 ### Getting the Token
 
 ```tsx
-import { useAuth, useToken } from '@/contexts/auth-context'
+import { useAuth, useToken } from "@/contexts/auth-context"
 
 function MyComponent() {
   // Full auth context
@@ -71,21 +73,22 @@ function MyComponent() {
 #### Option 1: Using Hooks (Recommended)
 
 ```tsx
-import { useApiQuery, useApiMutation } from '@/hooks/use-api'
+import { useApiQuery, useApiMutation } from "@/hooks/use-api"
 
 // GET request
 function UserList() {
-  const { data, isLoading, error } = useApiQuery<User[]>(
-    '/api/users',
-    ['users']
-  )
+  const { data, isLoading, error } = useApiQuery<User[]>("/api/users", [
+    "users",
+  ])
 
   if (isLoading) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
 
   return (
     <ul>
-      {data?.map(user => <li key={user.id}>{user.name}</li>)}
+      {data?.map((user) => (
+        <li key={user.id}>{user.name}</li>
+      ))}
     </ul>
   )
 }
@@ -93,17 +96,17 @@ function UserList() {
 // POST request
 function CreateUser() {
   const createUser = useApiMutation<User, CreateUserData>(
-    '/api/users',
-    'POST',
+    "/api/users",
+    "POST",
     {
-      onSuccess: (data) => console.log('Created:', data),
-      invalidateQueries: [['users']] // Refetch users list
+      onSuccess: (data) => console.log("Created:", data),
+      invalidateQueries: [["users"]], // Refetch users list
     }
   )
 
   return (
     <button
-      onClick={() => createUser.mutate({ name: 'John' })}
+      onClick={() => createUser.mutate({ name: "John" })}
       disabled={createUser.isPending}
     >
       Create User
@@ -115,15 +118,15 @@ function CreateUser() {
 #### Option 2: Using API Client Directly
 
 ```tsx
-import { api } from '@/lib/api-client'
-import { useToken } from '@/contexts/auth-context'
+import { api } from "@/lib/api-client"
+import { useToken } from "@/contexts/auth-context"
 
 function MyComponent() {
   const token = useToken()
 
   const fetchUsers = async () => {
     try {
-      const users = await api.get<User[]>('/api/users', token)
+      const users = await api.get<User[]>("/api/users", token)
       console.log(users)
     } catch (error) {
       console.error(error)
@@ -137,17 +140,17 @@ function MyComponent() {
 #### Option 3: Using TanStack Query Manually
 
 ```tsx
-import { useQuery } from '@tanstack/react-query'
-import { api } from '@/lib/api-client'
-import { useToken } from '@/contexts/auth-context'
+import { useQuery } from "@tanstack/react-query"
+import { api } from "@/lib/api-client"
+import { useToken } from "@/contexts/auth-context"
 
 function MyComponent() {
   const token = useToken()
 
   const { data } = useQuery({
-    queryKey: ['users'],
-    queryFn: () => api.get('/api/users', token),
-    enabled: !!token
+    queryKey: ["users"],
+    queryFn: () => api.get("/api/users", token),
+    enabled: !!token,
   })
 
   return <div>{/* render data */}</div>
@@ -157,22 +160,22 @@ function MyComponent() {
 ## API Client Methods
 
 ```typescript
-import { api } from '@/lib/api-client'
+import { api } from "@/lib/api-client"
 
 // GET
-const data = await api.get<T>('/endpoint', token)
+const data = await api.get<T>("/endpoint", token)
 
 // POST
-const result = await api.post<T>('/endpoint', { data }, token)
+const result = await api.post<T>("/endpoint", { data }, token)
 
 // PUT
-const result = await api.put<T>('/endpoint', { data }, token)
+const result = await api.put<T>("/endpoint", { data }, token)
 
 // PATCH
-const result = await api.patch<T>('/endpoint', { data }, token)
+const result = await api.patch<T>("/endpoint", { data }, token)
 
 // DELETE
-const result = await api.delete<T>('/endpoint', token)
+const result = await api.delete<T>("/endpoint", token)
 ```
 
 ## Development Mode
@@ -190,10 +193,10 @@ When running locally without the native app, the jsbridge is automatically mocke
 You can manually initialize a custom mock:
 
 ```tsx
-import { mockJsBridge } from '@/lib/jsbridge'
+import { mockJsBridge } from "@/lib/jsbridge"
 
 // Initialize with custom token
-mockJsBridge('my-custom-token')
+mockJsBridge("my-custom-token")
 ```
 
 ## Error Handling
@@ -201,7 +204,7 @@ mockJsBridge('my-custom-token')
 ### Token Loading Errors
 
 ```tsx
-import { useAuth } from '@/contexts/auth-context'
+import { useAuth } from "@/contexts/auth-context"
 
 function MyComponent() {
   const { error, refreshToken } = useAuth()
@@ -222,10 +225,10 @@ function MyComponent() {
 ### API Request Errors
 
 ```tsx
-import { useApiQuery } from '@/hooks/use-api'
+import { useApiQuery } from "@/hooks/use-api"
 
 function MyComponent() {
-  const { data, error, refetch } = useApiQuery('/api/users', ['users'])
+  const { data, error, refetch } = useApiQuery("/api/users", ["users"])
 
   if (error) {
     return (
@@ -249,8 +252,8 @@ If your native app provides additional methods:
 ```typescript
 // src/types/jsbridge.ts
 export interface JsBridge {
-  getToken: (callback: (token: string) => void) => void;
-  getUserInfo: (callback: (info: UserInfo) => void) => void; // Add more
+  getToken: (callback: (token: string) => void) => void
+  getUserInfo: (callback: (info: UserInfo) => void) => void // Add more
   // ... other methods
 }
 ```
@@ -277,10 +280,10 @@ export interface ApiResponse<T> {
 Use with hooks:
 
 ```typescript
-import { useApiQuery } from '@/hooks/use-api'
-import type { ApiResponse, User } from '@/types/api'
+import { useApiQuery } from "@/hooks/use-api"
+import type { ApiResponse, User } from "@/types/api"
 
-const { data } = useApiQuery<ApiResponse<User[]>>('/api/users', ['users'])
+const { data } = useApiQuery<ApiResponse<User[]>>("/api/users", ["users"])
 ```
 
 ## Best Practices
@@ -299,6 +302,7 @@ const { data } = useApiQuery<ApiResponse<User[]>>('/api/users', ['users'])
 **Problem:** `token` is `null`
 
 **Solutions:**
+
 1. Check if jsbridge is available: `window.proxy`
 2. Verify native app calls the callback
 3. Check console for errors
@@ -309,6 +313,7 @@ const { data } = useApiQuery<ApiResponse<User[]>>('/api/users', ['users'])
 **Problem:** API requests return 401/403
 
 **Solutions:**
+
 1. Verify token is being sent: Check Network tab
 2. Check `Authorization` header format
 3. Verify `NEXT_PUBLIC_API_URL` is correct
@@ -319,6 +324,7 @@ const { data } = useApiQuery<ApiResponse<User[]>>('/api/users', ['users'])
 **Problem:** Mock token not working
 
 **Solutions:**
+
 1. Ensure `.env.local` exists
 2. Verify `NEXT_PUBLIC_MOCK_TOKEN` is set
 3. Restart dev server after env changes
